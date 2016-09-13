@@ -9,6 +9,28 @@ using CefSharp.WinForms;
 
 namespace CefSharp.MinimalExample.WinForms
 {
+    public class BoundObject
+    {
+        private string _myProp = "gotta prop";
+
+        public string myProp
+        {
+            get
+            {
+                return _myProp;
+            }
+            set
+            {
+                _myProp = value;
+            }
+        }
+
+        public void myMethod()
+        {
+            Console.WriteLine("We're here.");
+        }
+    }
+
     public partial class BrowserForm : Form
     {
         private readonly ChromiumWebBrowser browser;
@@ -20,17 +42,40 @@ namespace CefSharp.MinimalExample.WinForms
             Text = "CefSharp";
             WindowState = FormWindowState.Maximized;
 
-            browser = new ChromiumWebBrowser("www.google.com")
+            browser = new ChromiumWebBrowser(string.Empty)
             {
                 Dock = DockStyle.Fill,
             };
             toolStripContainer.ContentPanel.Controls.Add(browser);
+
+            browser.RegisterJsObject("BO", new BoundObject());
+
+            browser.LoadHtml(@"
+<html>
+    <head>
+    <script>
+        function myFunction() {
+            alert('hi yall: ' + BO.myProp);
+            
+            BO.myProp = ""something else"";
+
+            alert('hi again: ' + BO.myProp);
+
+        }
+    </script>
+    </head>
+    <body>
+        hi 
+        <button onclick=""myFunction()"">click me</button>
+    </body>
+</html>", "http://rendering/");
 
             browser.LoadingStateChanged += OnLoadingStateChanged;
             browser.ConsoleMessage += OnBrowserConsoleMessage;
             browser.StatusMessage += OnBrowserStatusMessage;
             browser.TitleChanged += OnBrowserTitleChanged;
             browser.AddressChanged += OnBrowserAddressChanged;
+
 
             var bitness = Environment.Is64BitProcess ? "x64" : "x86";
             var version = String.Format("Chromium: {0}, CEF: {1}, CefSharp: {2}, Environment: {3}", Cef.ChromiumVersion, Cef.CefVersion, Cef.CefSharpVersion, bitness);
