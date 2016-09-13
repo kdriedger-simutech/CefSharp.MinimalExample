@@ -17,10 +17,12 @@ namespace CefSharp.MinimalExample.WinForms
         {
             get
             {
+                System.Diagnostics.Debugger.Break();
                 return _myProp;
             }
             set
             {
+                System.Diagnostics.Debugger.Break();
                 _myProp = value;
             }
         }
