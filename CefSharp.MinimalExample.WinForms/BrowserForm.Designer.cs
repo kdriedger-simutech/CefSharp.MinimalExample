@@ -171,7 +171,8 @@
             this.ClientSize = new System.Drawing.Size(730, 490);
             this.Controls.Add(this.toolStripContainer);
             this.Controls.Add(this.menuStrip1);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            //exception at runtime.  does not seem important
+            //this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "BrowserForm";
             this.Text = "BrowserForm";
