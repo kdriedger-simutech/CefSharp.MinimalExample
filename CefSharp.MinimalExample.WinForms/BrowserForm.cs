@@ -11,31 +11,25 @@ namespace CefSharp.MinimalExample.WinForms
 {
     public class BoundObject
     {
-        private string _myProp = "gotta prop";
-
-        public string myProp
+        public BoundObject()
         {
-            get
-            {
-                System.Diagnostics.Debugger.Break();
-                return _myProp;
-            }
-            set
-            {
-                System.Diagnostics.Debugger.Break();
-                _myProp = value;
-            }
+            Console.WriteLine("BoundObject constructor");
         }
 
-        public void myMethod()
+        public string myMethod(string __javascriptStack__ = "")
         {
             Console.WriteLine("We're here.");
+            Console.WriteLine(__javascriptStack__);
+
+            return "...myMethod called...";
         }
     }
 
     public partial class BrowserForm : Form
     {
         private readonly ChromiumWebBrowser browser;
+
+        private BoundObject mBO = new BoundObject();
 
         public BrowserForm()
         {
@@ -50,19 +44,16 @@ namespace CefSharp.MinimalExample.WinForms
             };
             toolStripContainer.ContentPanel.Controls.Add(browser);
 
-            browser.RegisterJsObject("BO", new BoundObject());
+            browser.RegisterJsObject("BO", mBO);
 
             browser.LoadHtml(@"
 <html>
     <head>
     <script>
         function myFunction() {
-            alert('hi yall: ' + BO.myProp);
-            
-            BO.myProp = ""something else"";
 
-            alert('hi again: ' + BO.myProp);
-
+            var st = new Error().stack;
+            alert('hi yall: ' + BO.myMethod(st));
         }
     </script>
     </head>
